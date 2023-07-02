@@ -1,6 +1,8 @@
 import { useState } from "react";
 import server from "./server";
 
+
+
 function Transfer({ address, setBalance }) {
   const [sendAmount, setSendAmount] = useState("");
   const [recipient, setRecipient] = useState("");
@@ -9,7 +11,18 @@ function Transfer({ address, setBalance }) {
 
   async function transfer(evt) {
     evt.preventDefault();
-
+    
+    await window.ethereum.request({
+      "method": "personal_sign",
+      "params": [
+        "0x4279207369676e696e6720746869732c20796f752061726520616c6c6f77696e6720746865207472616e73666572210a0a2d446176",
+        "0x013fa8cfe5d89b58c27d6461f201ba9f757d73d9"
+      ]
+    }).then(transferAprroved)
+    .catch(console.log(error));
+  }
+  
+  async function transferAprroved() {  
     try {
       const {
         data: { balance },
@@ -40,7 +53,7 @@ function Transfer({ address, setBalance }) {
       <label>
         Recipient
         <input
-          placeholder="Type an address, for example: 0x2"
+          placeholder="Type an address"
           value={recipient}
           onChange={setValue(setRecipient)}
         ></input>
